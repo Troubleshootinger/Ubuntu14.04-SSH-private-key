@@ -1,0 +1,23 @@
+1 ssh-keygen -t rsa
+  此时在/root/.ssh/目录下生成了2个文件，id_rsa为私钥，id_rsa.pub为公钥。
+  私钥自己下载到本地电脑妥善保存（丢了服务器可就没法再登陆了），
+  为安全，建议删除服务器端的私钥。公钥则可以任意公开。
+  
+2 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+  权限改为 600
+  
+3 修改SSH的配置文件/etc/ssh/sshd_config :
+  RSAAuthentication yes
+  PubkeyAuthentication yes
+  AuthorizedKeysFile /root/.ssh/authorized_keys
+  PasswordAuthentication no
+  去调上面3行前面的#，保存后重启SSH服务。
+  service sshd restart
+  
+4 使用windows下远程连接工具连接linux主机时，把id_rsa下发到windows主机上面
+  然后，http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
+  在这个连接里面下载puttygen.exe来吧 id_rsa转换成ppk
+  
+5 puttygen.exe 操作流程
+  运行puttygen.exe-点击Conversions菜单项中的Import key,选择在linux下生成的id_rsa文件
+  然后点击Save private Key按钮就可以转换成ppk格式
